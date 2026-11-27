@@ -4,28 +4,37 @@
 
 # DealHound — Black Friday Deal Finder
 
-A static Black Friday and Cyber Monday deal finder. **34 real deals** across
+A static Black Friday and Cyber Monday deal finder. **60 real deals** across
 7 categories (Electronics, Computing, Gaming, Home &amp; Kitchen, Beauty, Toys,
-Fashion) from 4 stores (Amazon, Best Buy, Target, Walmart), each with the
-product, store, store link, sale price, usual price, discount and the time its
-price was checked — plus an honest verdict on whether each deal is really a
-deal (Hot / Good / Mild).
+Fashion) from 10 stores (Amazon, Best Buy, Target, Walmart, Dell, Newegg,
+Costco, Kohl's, B&amp;H, Kate Spade), each with the product, store, store link,
+sale price, usual price, discount and the time its price was checked — plus an
+honest verdict on whether each deal is really a deal (Hot / Good / Mild) and
+a 0–100 deal score with the maths shown on the site.
 
-Every price was found and checked by hand on Black Friday, **27 Nov 2026
-(around 14:05 WIB)**, against the store listing or a deals roundup that names
-the store; each deal card on the site names its source.
+Every price was found and checked by hand on Black Friday, **27 Nov 2026**
+(the first 34 around 14:05 WIB, the next 6 around 17:20 WIB, the newest 20
+around 21:30 WIB), against the store's own Black Friday release or a named
+deals roundup that links the store; each deal card says which method verified
+it and names its source. Amazon's product pages refuse automated reads (HTTP
+403), so every Amazon price is confirmed by two or more independent roundups.
 
 ## Features
 
 - Search across products, brands and stores
-- Filter by category, store and minimum discount; sort by discount, saving or price
-- Per-deal detail page (hash route `#/deal/<id>`) with the full price history
-  shown, the verdict and why it earned it
+- Filter by category, store and minimum discount; sort by discount, deal
+  score, saving or price; one-tap "New lows only" and "Ending 28 Nov" filters
+- Top-picks strip: the 5 highest-scoring deals on the page
+- Shop-by-store strip: deal count and best discount per store, tap to filter
+- Cross-store comparison: 8 products priced at two stores, with the cheaper
+  one called out — also shown on each product's detail page
+- Per-deal detail page (hash route `#/deal/<id>`) with the full price
+  breakdown, the verdict and why it earned it, and the other store's price
 - Works offline from static files — no network requests, desktop and phone layouts
 
 ## Layout
 
-- `app/` — the site itself: `index.html`, `styles.css`, `data.js` (the 34
+- `app/` — the site itself: `index.html`, `styles.css`, `data.js` (the 60
   checked deals), `app.js` (rendering, search, filters, detail view)
 - `screenshots/` — 4 real renders of the site (desktop list, desktop deal
   detail, desktop filtered view, phone list)
