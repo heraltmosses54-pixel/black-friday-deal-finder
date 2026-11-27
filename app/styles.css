@@ -114,6 +114,45 @@ body {
 .stat-num { display: block; font-size: 26px; font-weight: 800; color: var(--amber); line-height: 1.1; }
 .stat-label { display: block; font-size: 12.5px; color: #c9d4e2; margin-top: 4px; }
 
+/* Top picks */
+
+.top-picks { padding: 4px 0 8px; }
+.top-picks h2, .store-strip-section h2 { font-size: 22px; color: var(--navy); margin: 18px 0 6px; }
+.top-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.top-list li {
+  display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
+  background: #fff; border: 1px solid var(--line);
+  border-left: 5px solid var(--amber);
+  border-radius: 10px; padding: 10px 14px;
+}
+.top-rank {
+  background: var(--navy); color: var(--amber);
+  font-weight: 800; font-size: 15px; width: 28px; height: 28px;
+  border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+}
+.top-name { font-weight: 700; color: var(--ink); text-decoration: none; flex: 1 1 260px; }
+.top-name:hover { color: var(--amber-dark); text-decoration: underline; }
+.top-store { font-size: 13px; color: var(--muted); }
+.top-price { font-size: 16px; font-weight: 800; color: var(--navy); }
+.top-price s { font-weight: 400; color: var(--muted); font-size: 13px; }
+.top-disc { background: var(--red); color: #fff; font-size: 13px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
+
+/* Shop by store */
+
+.store-strip-section { padding: 4px 0 8px; }
+.store-strip { display: flex; flex-wrap: wrap; gap: 10px; }
+.store-card {
+  flex: 1 1 140px;
+  background: #fff; border: 1.5px solid var(--navy); border-radius: var(--radius);
+  padding: 12px 14px; cursor: pointer; text-align: left;
+  display: grid; gap: 2px;
+}
+.store-card:hover { background: #eef2f7; border-color: var(--amber-dark); }
+.store-card-name { font-weight: 800; font-size: 15px; color: var(--navy); }
+.store-card-count { font-size: 13px; color: var(--muted); }
+.store-card-best { font-size: 13px; font-weight: 700; color: var(--green); }
+
 /* Compare strip */
 
 .compare-section { padding: 6px 0 10px; }
@@ -272,6 +311,7 @@ body {
 .deal-detail dt { color: var(--muted); font-size: 13px; }
 .deal-detail dd { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
 .deal-detail .verdict-note { background: #fdf6e3; border-left: 4px solid var(--amber); padding: 12px 14px; border-radius: 0 8px 8px 0; }
+.detail-compare { background: #eef2f7; border-left: 4px solid var(--navy); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 14.5px; }
 .back-link { color: var(--navy); font-weight: 700; cursor: pointer; background: none; border: none; padding: 0; font-size: 14px; text-decoration: underline; }
 
 .empty { text-align: center; color: var(--muted); padding: 30px 0; }
@@ -295,4 +335,7 @@ body {
   .deal-detail .detail-grid { grid-template-columns: 1fr; }
   .card-actions { flex-direction: column; }
   .btn { width: 100%; }
+  .store-card { flex: 1 1 44%; }
+  .top-list li { gap: 4px 8px; }
+  .top-name { flex-basis: 100%; }
 }

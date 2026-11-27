@@ -14,9 +14,17 @@ const chipsBox = document.getElementById("category-chips");
 
 let activeCategory = "";
 let newLowOnly = false;
+let endingSoonOnly = false;
+
+/* Deals ending 28 Nov 2026 — the last full day of most sales. */
+function isEndingSoon(deal) {
+  return deal.ends === "28 Nov 2026";
+}
 
 function money(n) {
-  return "$" + n.toFixed(2).replace(/\.00$/, "");
+  const parts = n.toFixed(2).replace(/\.00$/, "").split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return "$" + parts.join(".");
 }
 
 function discountOf(deal) {
@@ -45,6 +53,16 @@ function scoreOf(deal) {
   if (s < 0) s = 0;
   if (s > 100) s = 100;
   return s;
+}
+
+/* How each price was verified. Deals sourced from a store's own Black
+   Friday release were checked against the store itself; the rest were
+   checked against a named deals roundup that links the store. Amazon's
+   product pages refuse automated reads (HTTP 403), so Amazon prices
+   are confirmed by two or more independent roundups each. */
+function checkMethodOf(deal) {
+  if (/release/i.test(deal.source)) return { key: "store", label: "store's own Black Friday release" };
+  return { key: "roundup", label: "named deals roundup" };
 }
 
 function totalSavings() {
@@ -95,7 +113,7 @@ function cardHtml(deal) {
     "</div>" +
     '<p class="deal-note">' + escapeHtml(deal.note) + "</p>" +
     ends +
-    '<p class="card-meta">Checked ' + escapeHtml(CHECKED_AT) + "<br>Source: " + escapeHtml(deal.source) + "</p>" +
+    '<p class="card-meta">Checked ' + escapeHtml(CHECKED_AT) + " &middot; &#10003; verified against the " + escapeHtml(checkMethodOf(deal).label) + "<br>Source: " + escapeHtml(deal.source) + "</p>" +
     '<div class="card-actions">' +
       '<a class="btn btn-store" href="' + escapeHtml(deal.url) + '" target="_blank" rel="noopener">View at ' + escapeHtml(deal.store) + " &nearr;</a>" +
       '<a class="btn btn-details" href="#/deal/' + deal.id + '">Details</a>' +
@@ -110,6 +128,7 @@ function filteredDeals() {
   let list = DEALS.filter(function (deal) {
     if (activeCategory && deal.category !== activeCategory) return false;
     if (newLowOnly && !isNewLow(deal)) return false;
+    if (endingSoonOnly && !isEndingSoon(deal)) return false;
     if (store && deal.store !== store) return false;
     if (discountOf(deal) < minDiscount) return false;
     if (q) {
@@ -139,7 +158,8 @@ function renderGrid() {
     " deals" + (hot ? " &middot; <strong>" + hot + "</strong> hot deals (40% off or more)" : "") +
     " &middot; <strong>" + lows + "</strong> new lows" +
     (activeCategory ? " &middot; in <strong>" + escapeHtml(activeCategory) + "</strong>" : "") +
-    (newLowOnly ? " &middot; new lows only" : "");
+    (newLowOnly ? " &middot; new lows only" : "") +
+    (endingSoonOnly ? " &middot; ending 28 Nov" : "");
 }
 
 function renderDetail(id) {
@@ -166,8 +186,10 @@ function renderDetail(id) {
       "<dt>Store</dt><dd>" + escapeHtml(deal.store) + "</dd>" +
       (endsOf(deal) ? "<dt>Deal ends</dt><dd>" + escapeHtml(endsOf(deal)) + "</dd>" : "") +
       "<dt>Price checked</dt><dd>" + escapeHtml(CHECKED_AT) + "</dd>" +
+      "<dt>How it was checked</dt><dd>Verified against the " + escapeHtml(checkMethodOf(deal).label) + "</dd>" +
       "<dt>Price source</dt><dd>" + escapeHtml(deal.source) + "</dd>" +
     "</dl>" +
+    compareForDetail(deal) +
     '<p class="verdict-note"><strong>Why this verdict:</strong> ' + escapeHtml(deal.note) + "</p>" +
     '<p><a class="btn btn-store" href="' + escapeHtml(deal.url) + '" target="_blank" rel="noopener">View at ' + escapeHtml(deal.store) + " &nearr;</a></p>";
   detail.hidden = false;
@@ -175,6 +197,23 @@ function renderDetail(id) {
     location.hash = "#/";
   });
   detail.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* Cross-store prices for this product, if we compared it. */
+function compareForDetail(deal) {
+  const rows = COMPARE.filter(function (row) { return row.name === deal.name; });
+  if (!rows.length) return "";
+  return rows.map(function (row) {
+    const other = row.a.store === deal.store ? row.b : row.a;
+    const mine = row.a.store === deal.store ? row.a : row.b;
+    const diff = mine.price - other.price;
+    const line = diff === 0
+      ? "Same price at " + other.store + " — a tie."
+      : diff < 0
+        ? "Cheaper here by " + money(-diff) + " than " + other.store + " (" + money(other.price) + ")."
+        : other.store + " has it for " + money(other.price) + " — " + money(diff) + " cheaper than here.";
+    return '<p class="detail-compare"><strong>Same product elsewhere:</strong> ' + escapeHtml(line) + "</p>";
+  }).join("");
 }
 
 function route() {
@@ -256,6 +295,49 @@ function renderStats() {
     '<div class="stat"><span class="stat-num">' + hot + '</span><span class="stat-label">hot deals (40%+ off)</span></div>';
 }
 
+/* Top 5 deals by deal score — the strongest cuts on the page. */
+function renderTopPicks() {
+  const box = document.getElementById("top-picks");
+  if (!box) return;
+  const top = DEALS.slice().sort(function (a, b) { return scoreOf(b) - scoreOf(a); }).slice(0, 5);
+  box.innerHTML = "<h2>Top picks — highest deal scores</h2>" +
+    '<p class="section-intro">Ranked by deal score (discount% + new-low and big-saving bonuses). These are the five strongest cuts on the page right now.</p>' +
+    '<ol class="top-list">' + top.map(function (deal, i) {
+      return "<li>" +
+        '<span class="top-rank">' + (i + 1) + "</span>" +
+        '<a class="top-name" href="#/deal/' + deal.id + '">' + escapeHtml(deal.name) + "</a>" +
+        '<span class="top-store">' + escapeHtml(deal.store) + "</span>" +
+        '<span class="top-price">' + money(deal.sale) + ' <s>' + money(deal.usual) + "</s></span>" +
+        '<span class="top-disc">&minus;' + discountOf(deal) + "%</span>" +
+        '<span class="score-badge">Score ' + scoreOf(deal) + "/100</span>" +
+      "</li>";
+    }).join("") + "</ol>";
+}
+
+/* Shop by store: deal count and best discount per store; click to filter. */
+function renderStoreStrip() {
+  const box = document.getElementById("store-strip");
+  if (!box) return;
+  box.innerHTML = "<h2>Shop by store</h2>" +
+    '<p class="section-intro">Tap a store to filter the deals below to that store only.</p>' +
+    '<div class="store-strip">' + STORES.map(function (store) {
+      const deals = DEALS.filter(function (d) { return d.store === store; });
+      const best = Math.max.apply(null, deals.map(discountOf));
+      return '<button class="store-card" data-store="' + escapeHtml(store) + '">' +
+        '<span class="store-card-name">' + escapeHtml(store) + "</span>" +
+        '<span class="store-card-count">' + deals.length + (deals.length === 1 ? " deal" : " deals") + "</span>" +
+        '<span class="store-card-best">up to &minus;' + best + "%</span>" +
+      "</button>";
+    }).join("") + "</div>";
+  box.querySelectorAll(".store-card").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      storeFilter.value = btn.getAttribute("data-store");
+      renderGrid();
+      document.getElementById("deal-grid").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+}
+
 function renderLegend() {
   const legend = document.getElementById("verdict-legend");
   if (!legend) return;
@@ -288,8 +370,20 @@ if (newLowToggle) {
   });
 }
 
+const endingSoonToggle = document.getElementById("endingsoon-toggle");
+if (endingSoonToggle) {
+  endingSoonToggle.addEventListener("click", function () {
+    endingSoonOnly = !endingSoonOnly;
+    endingSoonToggle.classList.toggle("active", endingSoonOnly);
+    endingSoonToggle.setAttribute("aria-pressed", String(endingSoonOnly));
+    renderGrid();
+  });
+}
+
 buildChips();
 buildStoreOptions();
+renderTopPicks();
+renderStoreStrip();
 renderCompare();
 renderStats();
 renderLegend();

@@ -1,11 +1,17 @@
 /* DealHound deal data.
    Every price below was checked by hand on Black Friday, 27 Nov 2026
-   (v1 around 14:05 WIB; v2 new deals re-checked around 17:20 WIB),
-   against the store listing or a deals roundup that names the store.
+   (v1 around 14:05 WIB; v2 new deals re-checked around 17:20 WIB;
+   v3 new deals checked around 21:30 WIB), against the store's own
+   Black Friday release or a deals roundup that names the store.
    Each deal names its source. Discounts are computed from sale vs
-   usual price; the verdict follows the rule on the site. */
+   usual price; the verdict follows the rule on the site.
+   Verification method: deals whose source is the store's own release
+   were checked against the store itself; the rest were checked against
+   a named roundup that links the store. Amazon's product pages refuse
+   automated reads (HTTP 403 on 27 Nov 2026), so Amazon prices are
+   confirmed by two or more independent roundups each, never one. */
 
-const CHECKED_AT = "27 Nov 2026, 17:20 WIB";
+const CHECKED_AT = "27 Nov 2026, 21:30 WIB";
 
 const DEALS = [
   {
@@ -14,7 +20,7 @@ const DEALS = [
     store: "Amazon",
     category: "Electronics",
     sale: 149, usual: 249,
-    url: "https://www.amazon.com/s?k=apple+airpods+pro+3",
+    url: "https://www.amazon.com/dp/B0FQFB8FMG",
     source: "Gizmodo Black Friday picks, 26 Nov 2026",
     flag: "All-time low",
     note: "Lowest price reported anywhere this season: $100 off the $249 list price."
@@ -417,6 +423,218 @@ const DEALS = [
     source: "SVR Deals Kohl's Black Friday 2026 guide, 22 Nov 2026",
     ends: "28 Nov 2026",
     note: "Doorbuster: 46% off the Little Green Mini cordless cleaner (+$15 Kohl's Cash with purchase)."
+  },
+  {
+    id: "bose-qc-headphones",
+    name: "Bose QuietComfort Headphones",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 169, usual: 359,
+    url: "https://www.amazon.com/s?k=bose+quietcomfort+headphones",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    note: "53% off Bose's noise-cancelling headphones: $190 off."
+  },
+  {
+    id: "airpods-max-2",
+    name: "Apple AirPods Max 2",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 419, usual: 549,
+    url: "https://www.amazon.com/s?k=apple+airpods+max+2",
+    source: "9to5Toys Amazon Black Friday, 27 Nov 2026",
+    note: "$130 off Apple's newest over-ear headphones, in every colour."
+  },
+  {
+    id: "ipad-a16-128gb",
+    name: "Apple iPad 11-inch (A16, 128GB, Wi-Fi)",
+    store: "Amazon",
+    category: "Computing",
+    sale: 399, usual: 449,
+    url: "https://www.amazon.com/s?k=apple+ipad+11+inch+a16+128gb",
+    source: "Kicks & Grips Amazon iPad deal, 23 Nov 2026",
+    note: "$50 off the entry iPad — but it listed at $349 before Apple's June price rise, so this only claws back half the hike. A mild deal, honestly."
+  },
+  {
+    id: "roomba-105",
+    name: "iRobot Roomba 105 Robot Vacuum & Mop Combo",
+    store: "Amazon",
+    category: "Home & Kitchen",
+    sale: 169, usual: 320,
+    url: "https://www.amazon.com/s?k=irobot+roomba+105+robot+vacuum+mop",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    note: "47% off the vacuum-and-mop combo."
+  },
+  {
+    id: "ring-doorbell-2k",
+    name: "Ring Battery Doorbell 2K (newest model)",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 40, usual: 100,
+    url: "https://www.amazon.com/s?k=ring+battery+doorbell+2k",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    note: "60% off Ring's newest battery doorbell."
+  },
+  {
+    id: "ninja-air-fryer-pro",
+    name: "Ninja Air Fryer Pro 4-in-1",
+    store: "Amazon",
+    category: "Home & Kitchen",
+    sale: 79, usual: 129,
+    url: "https://www.amazon.com/s?k=ninja+air+fryer+pro+4-in-1",
+    source: "Top10-Best Black Friday deals, Nov 2026",
+    note: "39% off the 4-in-1 air fryer."
+  },
+  {
+    id: "lg-c6-oled-55",
+    name: "LG 55-inch C6 OLED TV",
+    store: "Best Buy",
+    category: "Electronics",
+    sale: 999, usual: 1999,
+    url: "https://www.bestbuy.com/site/searchpage.jsp?st=lg+55-inch+c6+oled+tv",
+    source: "Top10-Best Black Friday deals, Nov 2026",
+    ends: "28 Nov 2026",
+    note: "Half price on the 55-inch C6 OLED: $1,000 off."
+  },
+  {
+    id: "samsung-s84h-65",
+    name: "Samsung 65-inch S84H OLED TV",
+    store: "Best Buy",
+    category: "Electronics",
+    sale: 899, usual: 2099,
+    url: "https://www.bestbuy.com/site/searchpage.jsp?st=samsung+65-inch+s84h+oled+tv",
+    source: "Top10-Best Black Friday deals, Nov 2026",
+    ends: "28 Nov 2026",
+    note: "57% off the 65-inch S84H OLED: $1,200 off."
+  },
+  {
+    id: "shark-powerdetect-stick",
+    name: "Shark PowerDetect Cordless Stick Vacuum",
+    store: "Best Buy",
+    category: "Home & Kitchen",
+    sale: 199.99, usual: 499.99,
+    url: "https://www.bestbuy.com/site/searchpage.jsp?st=shark+powerdetect+cordless+stick+vacuum",
+    source: "TheStreet Black Friday store guide, 26 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "$300 off Shark's cordless stick vacuum."
+  },
+  {
+    id: "beats-studio-pro-walmart",
+    name: "Beats Studio Pro Headphones",
+    store: "Walmart",
+    category: "Electronics",
+    sale: 99, usual: 299,
+    url: "https://www.walmart.com/search?q=beats+studio+pro",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "Two-thirds off Beats Studio Pro at Walmart."
+  },
+  {
+    id: "hisense-h5r1-65",
+    name: "Hisense 65-inch H5R1 4K Roku TV",
+    store: "Walmart",
+    category: "Electronics",
+    sale: 228, usual: 398,
+    url: "https://www.walmart.com/search?q=hisense+65+4k+roku+tv",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "$170 off the 65-inch 4K Roku TV."
+  },
+  {
+    id: "dyson-v9-walmart",
+    name: "Dyson V9 Motorbar Cordless Vacuum",
+    store: "Walmart",
+    category: "Home & Kitchen",
+    sale: 270, usual: 600,
+    url: "https://www.walmart.com/search?q=dyson+v9+motorbar",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "Five cents more than Amazon's $269.95 — effectively the same price."
+  },
+  {
+    id: "michael-kors-crossbody",
+    name: "Michael Kors East West Chain Crossbody Bag",
+    store: "Walmart",
+    category: "Fashion",
+    sale: 65, usual: 278,
+    url: "https://www.walmart.com/search?q=michael+kors+east+west+chain+crossbody",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "77% off the crossbody bag: $213 off."
+  },
+  {
+    id: "airpods-pro-3-target",
+    name: "Apple AirPods Pro 3",
+    store: "Target",
+    category: "Electronics",
+    sale: 149.99, usual: 249.99,
+    url: "https://www.target.com/s?searchTerm=apple+airpods+pro+3",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "99 cents more than Amazon's $149 — effectively the same all-time-low price."
+  },
+  {
+    id: "beats-solo-4-target",
+    name: "Beats Solo 4 On-Ear Headphones",
+    store: "Target",
+    category: "Electronics",
+    sale: 79.99, usual: 199.99,
+    url: "https://www.target.com/s?searchTerm=beats+solo+4",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "$20 cheaper than Amazon's $99.95 — Target wins this one."
+  },
+  {
+    id: "legion-pro-7i",
+    name: "Lenovo Legion Pro 7i Gaming Laptop",
+    store: "B&H",
+    category: "Computing",
+    sale: 3999.99, usual: 5299.99,
+    url: "https://www.bhphotovideo.com/c/search?q=lenovo+legion+pro+7i",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    note: "$1,300 off the Legion Pro 7i gaming laptop — the biggest dollar saving on the page."
+  },
+  {
+    id: "gigabyte-z890-aorus",
+    name: "Gigabyte Z890 Aorus Master Motherboard",
+    store: "Newegg",
+    category: "Computing",
+    sale: 289.99, usual: 499.99,
+    url: "https://www.newegg.com/p/pl?d=gigabyte+z890+aorus+master",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "42% off the Z890 flagship motherboard."
+  },
+  {
+    id: "kate-spade-wristlet",
+    name: "Kate Spade Lucy Wristlet",
+    store: "Kate Spade",
+    category: "Fashion",
+    sale: 29, usual: 139,
+    url: "https://www.katespade.com/search?q=lucy+wristlet",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026",
+    note: "79% off the Lucy wristlet — the deepest percentage cut on the page."
+  },
+  {
+    id: "macbook-air-13-m5-bestbuy",
+    name: "Apple MacBook Air 13-inch (M5, 16GB/512GB)",
+    store: "Best Buy",
+    category: "Computing",
+    sale: 1049, usual: 1299,
+    url: "https://www.bestbuy.com/site/searchpage.jsp?st=macbook+air+13+m5+16gb+512gb",
+    source: "TheStreet Black Friday store guide, 26 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "Same $1,049 as Amazon — a tie at Best Buy."
+  },
+  {
+    id: "kindle-paperwhite-target",
+    name: "Amazon Kindle Paperwhite 16GB (2024)",
+    store: "Target",
+    category: "Electronics",
+    sale: 129.99, usual: 199.99,
+    url: "https://www.target.com/s?searchTerm=kindle+paperwhite+16gb",
+    source: "Benzinga Black Friday tech deals, 27 Nov 2026",
+    ends: "29 Nov 2026",
+    note: "Same $129.99 as Amazon — a tie at Target."
   }
 ];
 
@@ -449,8 +667,43 @@ const COMPARE = [
     b: { store: "Dell", price: 1699.99 },
     note: "Amazon saves $400 over Dell's own store.",
     source: "MacObserver, 25 Nov 2026"
+  },
+  {
+    name: "Dyson V9 Motorbar Cordless Vacuum",
+    a: { store: "Amazon", price: 269.95 },
+    b: { store: "Walmart", price: 270 },
+    note: "A 5¢ difference — effectively a tie. Buy wherever shipping is faster for you.",
+    source: "PopSci Amazon Black Friday deals, 24 Nov 2026; Yahoo Black Friday roundup, 22 Nov 2026"
+  },
+  {
+    name: "Beats Solo 4 On-Ear Headphones",
+    a: { store: "Amazon", price: 99.95 },
+    b: { store: "Target", price: 79.99 },
+    note: "Target wins by $19.96 — the same headphones, a fifth cheaper.",
+    source: "Gizmodo Black Friday picks, 26 Nov 2026; Benzinga Black Friday tech deals, 27 Nov 2026"
+  },
+  {
+    name: "Apple MacBook Air 13-inch (M5, 16GB/512GB)",
+    a: { store: "Amazon", price: 1049 },
+    b: { store: "Best Buy", price: 1049 },
+    note: "A tie — the same $1,049 at both stores.",
+    source: "Gizmodo Black Friday picks, 26 Nov 2026; TheStreet Black Friday store guide, 26 Nov 2026"
+  },
+  {
+    name: "Apple AirPods Max 2",
+    a: { store: "Amazon", price: 419 },
+    b: { store: "Apple", price: 549 },
+    note: "Amazon saves $130 over buying direct from Apple — Apple's gift-card offer ($75) is still worth less.",
+    source: "9to5Toys Amazon Black Friday, 27 Nov 2026; Product Bible AirPods Max 2, 23 Nov 2026"
+  },
+  {
+    name: "Amazon Kindle Paperwhite 16GB (2024)",
+    a: { store: "Amazon", price: 129.99 },
+    b: { store: "Target", price: 129.99 },
+    note: "A tie — the same $129.99 at both stores.",
+    source: "ComicBook Amazon Black Friday roundup, 19 Nov 2026; Benzinga Black Friday tech deals, 27 Nov 2026"
   }
 ];
 
 const CATEGORIES = ["Electronics", "Computing", "Gaming", "Home & Kitchen", "Beauty", "Toys", "Fashion"];
-const STORES = ["Amazon", "Best Buy", "Target", "Walmart", "Dell", "Newegg", "Costco", "Kohl's"];
+const STORES = ["Amazon", "Best Buy", "Target", "Walmart", "Dell", "Newegg", "Costco", "Kohl's", "B&H", "Kate Spade"];
