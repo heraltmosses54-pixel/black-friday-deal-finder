@@ -84,6 +84,8 @@ body {
 
 .chip:hover { background: #eef2f7; }
 .chip.active { background: var(--navy); color: #fff; }
+.chip-toggle { border-color: var(--amber-dark); color: #8a5200; background: #fdf6e3; }
+.chip-toggle.active { background: var(--amber); color: var(--navy); border-color: var(--amber-dark); }
 
 .selects { display: flex; flex-wrap: wrap; gap: 12px; }
 .selects label { font-size: 13px; color: var(--muted); display: grid; gap: 3px; }
@@ -94,6 +96,52 @@ body {
 
 .result-line { color: var(--muted); font-size: 14px; margin: 12px 0 4px; }
 .result-line strong { color: var(--ink); }
+
+/* Stats banner */
+
+.stats-banner {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 20px 0 4px;
+}
+.stat {
+  flex: 1 1 150px;
+  background: var(--navy);
+  color: #f7f2e7;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-align: center;
+}
+.stat-num { display: block; font-size: 26px; font-weight: 800; color: var(--amber); line-height: 1.1; }
+.stat-label { display: block; font-size: 12.5px; color: #c9d4e2; margin-top: 4px; }
+
+/* Compare strip */
+
+.compare-section { padding: 6px 0 10px; }
+.compare-section h2, .verdict-legend h2 { font-size: 22px; color: var(--navy); margin: 18px 0 6px; }
+.section-intro { color: var(--muted); font-size: 14px; margin: 0 0 12px; max-width: 900px; }
+.compare-row {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--amber);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.compare-row h3 { margin: 0 0 8px; font-size: 17px; }
+.compare-prices { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.compare-price { font-size: 16px; background: #eef1f4; border-radius: 8px; padding: 6px 12px; }
+.compare-price.cheapest { background: #ddf0e2; color: var(--green); font-weight: 700; }
+.compare-vs { color: var(--muted); font-size: 13px; font-weight: 700; }
+.compare-verdict { margin: 10px 0 4px; font-size: 14.5px; }
+.compare-source { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+/* Verdict legend */
+
+.verdict-legend { padding: 6px 0 26px; }
+.legend-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.legend-list li { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14.5px; }
+.legend-score { font-size: 14px; color: var(--muted); max-width: 900px; }
+.legend-score strong { color: var(--ink); }
 
 /* Deal grid and cards */
 
@@ -159,6 +207,22 @@ body {
 .verdict.hot { background: #fde8c8; color: #8a5200; }
 .verdict.good { background: #ddf0e2; color: var(--green); }
 .verdict.mild { background: #eef1f4; color: var(--muted); }
+.verdict.inflated { background: #fbe3e1; color: var(--red); }
+
+.card-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.score-badge {
+  display: inline-block;
+  font-size: 13px; font-weight: 800;
+  color: var(--navy);
+  background: #fdf6e3;
+  border: 1.5px solid var(--amber);
+  padding: 4px 10px; border-radius: 999px;
+  align-self: flex-start;
+}
+
+.deal-note { margin: 0; font-size: 14px; color: var(--ink); }
+.ends-line { margin: 0; font-size: 12.5px; font-weight: 700; color: var(--red); }
 
 .flag {
   display: inline-block;

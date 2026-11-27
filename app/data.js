@@ -1,10 +1,11 @@
 /* DealHound deal data.
    Every price below was checked by hand on Black Friday, 27 Nov 2026
-   (around 14:05 WIB), against the store listing or a deals roundup that
-   names the store. Each deal names its source. Discounts are computed
-   from sale vs usual price; the verdict follows the rule on the site. */
+   (v1 around 14:05 WIB; v2 new deals re-checked around 17:20 WIB),
+   against the store listing or a deals roundup that names the store.
+   Each deal names its source. Discounts are computed from sale vs
+   usual price; the verdict follows the rule on the site. */
 
-const CHECKED_AT = "27 Nov 2026, 14:05 WIB";
+const CHECKED_AT = "27 Nov 2026, 17:20 WIB";
 
 const DEALS = [
   {
@@ -298,6 +299,7 @@ const DEALS = [
     sale: 499.99, usual: 709.99,
     url: "https://www.amazon.com/s?k=dyson+airwrap+id",
     source: "PopSci Amazon Black Friday deals, 24 Nov 2026",
+    flag: "New low",
     note: "$210 off the Airwrap i.d. multi-styler; lowest price of 2026 per the roundup."
   },
   {
@@ -350,8 +352,105 @@ const DEALS = [
     source: "McGraw Media live Black Friday deals, 23 Nov 2026",
     flag: "All-time low",
     note: "Same $149 all-time-low price as Amazon, at Walmart."
+  },
+  {
+    id: "dell-xps-13-touch",
+    name: "Dell XPS 13 (Core 5 320, 8GB/256GB, touch)",
+    store: "Dell",
+    category: "Computing",
+    sale: 549.99, usual: 749.99,
+    url: "https://www.dell.com/en-us/search/xps%2013",
+    source: "9to5Toys Dell Black Friday sale, 24 Nov 2026",
+    flag: "All-time low",
+    note: "All-time low on the touch XPS 13: $200 off the $749.99 list price."
+  },
+  {
+    id: "alienware-16-aurora",
+    name: "Alienware 16 Aurora Gaming Laptop (RTX 5050)",
+    store: "Dell",
+    category: "Computing",
+    sale: 1100, usual: 2000,
+    url: "https://www.dell.com/en-us/search/alienware%2016%20aurora",
+    source: "9to5Toys Dell Black Friday sale, 24 Nov 2026",
+    note: "45% off the Aurora gaming laptop with an RTX 5050: $900 off."
+  },
+  {
+    id: "samsung-9100-pro-2tb",
+    name: "Samsung 9100 PRO 2TB PCIe 5.0 NVMe SSD",
+    store: "Newegg",
+    category: "Computing",
+    sale: 349.99, usual: 679.99,
+    url: "https://www.newegg.com/p/pl?d=samsung+9100+pro+2tb",
+    source: "Newegg Black Friday release via BusinessWire, 18 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "48% off the 2TB PCIe 5.0 flagship SSD: $330 off."
+  },
+  {
+    id: "lg-c6-oled-42",
+    name: "LG 42-inch OLED evo C6 4K TV",
+    store: "Newegg",
+    category: "Electronics",
+    sale: 899.99, usual: 1399.99,
+    url: "https://www.newegg.com/p/pl?d=lg+c6+oled+42",
+    source: "Clark Deals Newegg Black Friday ad, 19 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "Save $500 on the 42-inch OLED evo C6 4K TV."
+  },
+  {
+    id: "samsung-s90h-65",
+    name: "Samsung 65-inch S90H OLED TV",
+    store: "Costco",
+    category: "Electronics",
+    sale: 1399.99, usual: 2699.99,
+    url: "https://www.costco.com/CatalogSearch?dept=All&keyword=samsung+s90h+65",
+    source: "SlashGear Costco early Black Friday, 13 Nov 2026",
+    ends: "30 Nov 2026",
+    note: "48% off the 65-inch S90H OLED: $1,300 off, valid through Nov 30."
+  },
+  {
+    id: "bissell-little-green-mini",
+    name: "BISSELL Little Green Mini Cordless Cleaner",
+    store: "Kohl's",
+    category: "Home & Kitchen",
+    sale: 69.99, usual: 129.99,
+    url: "https://www.kohls.com/search.jsp?search=bissell+little+green+mini",
+    source: "SVR Deals Kohl's Black Friday 2026 guide, 22 Nov 2026",
+    ends: "28 Nov 2026",
+    note: "Doorbuster: 46% off the Little Green Mini cordless cleaner (+$15 Kohl's Cash with purchase)."
+  }
+];
+
+/* Amazon Black Friday Week runs 19-30 Nov 2026, so every Amazon deal
+   without its own end date ends 30 Nov 2026. */
+DEALS.forEach(function (d) {
+  if (!d.ends && d.store === "Amazon") d.ends = "30 Nov 2026";
+});
+
+/* Same product, two stores: cross-store comparison, verified 27 Nov 2026.
+   The Dell 14 Plus row is shown in the strip only, not as a deal card. */
+const COMPARE = [
+  {
+    name: "Apple AirPods Pro 3",
+    a: { store: "Amazon", price: 149 },
+    b: { store: "Walmart", price: 149 },
+    note: "A tie — the same $149 all-time-low price at both stores.",
+    source: "Gizmodo Black Friday picks, 26 Nov 2026; McGraw Media live Black Friday deals, 23 Nov 2026"
+  },
+  {
+    name: "Apple MacBook Air 13-inch (M5, 16GB/512GB)",
+    a: { store: "Amazon", price: 1049 },
+    b: { store: "Apple", price: 1299 },
+    note: "Amazon saves $250 over buying direct from Apple.",
+    source: "Product Bible laptop roundup, 23 Nov 2026"
+  },
+  {
+    name: "Dell 14 Plus Laptop (32GB/1TB)",
+    a: { store: "Amazon", price: 1299.99 },
+    b: { store: "Dell", price: 1699.99 },
+    note: "Amazon saves $400 over Dell's own store.",
+    source: "MacObserver, 25 Nov 2026"
   }
 ];
 
 const CATEGORIES = ["Electronics", "Computing", "Gaming", "Home & Kitchen", "Beauty", "Toys", "Fashion"];
-const STORES = ["Amazon", "Best Buy", "Target", "Walmart"];
+const STORES = ["Amazon", "Best Buy", "Target", "Walmart", "Dell", "Newegg", "Costco", "Kohl's"];
