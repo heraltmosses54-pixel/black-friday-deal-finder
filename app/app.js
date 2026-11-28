@@ -41,6 +41,55 @@ function isNewLow(deal) {
   return deal.flag === "All-time low" || deal.flag === "New low";
 }
 
+/* When this deal's price was checked: v4 deals carry their own
+   `checked` field; older deals share the page-wide CHECKED_AT. */
+function checkedOf(deal) {
+  return deal.checked || CHECKED_AT;
+}
+
+/* "My deal list": shoppers save deals and see what the whole list
+   costs and saves. Kept in localStorage; a ?list=<id,id> link
+   pre-fills the list (and is what "Copy link" shares). */
+const LIST_KEY = "dealhound-list-v1";
+let savedIds = loadSavedList();
+
+function loadSavedList() {
+  try {
+    const fromParam = new URLSearchParams(location.search).get("list");
+    if (fromParam) {
+      const ids = fromParam.split(",").map(function (s) { return s.trim(); })
+        .filter(function (id) { return DEALS.some(function (d) { return d.id === id; }); });
+      if (ids.length) {
+        try { localStorage.setItem(LIST_KEY, JSON.stringify(ids)); } catch (e) {}
+        return ids;
+      }
+    }
+    const raw = localStorage.getItem(LIST_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(function (id) { return DEALS.some(function (d) { return d.id === id; }); });
+  } catch (e) { return []; }
+}
+
+function storeSavedList() {
+  try { localStorage.setItem(LIST_KEY, JSON.stringify(savedIds)); } catch (e) {}
+}
+
+function isSaved(id) { return savedIds.indexOf(id) !== -1; }
+
+function toggleSaved(id) {
+  const i = savedIds.indexOf(id);
+  if (i === -1) savedIds.push(id); else savedIds.splice(i, 1);
+  storeSavedList();
+  renderMyList();
+  renderGrid();
+  if (!detail.hidden) {
+    const m = location.hash.match(/^#\/deal\/([\w-]+)$/);
+    if (m) renderDetail(m[1]);
+  }
+}
+
 /* Deal score, published on the site so shoppers can see the maths:
    discount% + 15 for a genuine new/all-time low + 10 for saving $200+
    + 10 more for saving $500+ - 15 if the was-price is inflated;
@@ -113,10 +162,11 @@ function cardHtml(deal) {
     "</div>" +
     '<p class="deal-note">' + escapeHtml(deal.note) + "</p>" +
     ends +
-    '<p class="card-meta">Checked ' + escapeHtml(CHECKED_AT) + " &middot; &#10003; verified against the " + escapeHtml(checkMethodOf(deal).label) + "<br>Source: " + escapeHtml(deal.source) + "</p>" +
+    '<p class="card-meta">Checked ' + escapeHtml(checkedOf(deal)) + " &middot; &#10003; verified against the " + escapeHtml(checkMethodOf(deal).label) + "<br>Source: " + escapeHtml(deal.source) + "</p>" +
     '<div class="card-actions">' +
       '<a class="btn btn-store" href="' + escapeHtml(deal.url) + '" target="_blank" rel="noopener">View at ' + escapeHtml(deal.store) + " &nearr;</a>" +
       '<a class="btn btn-details" href="#/deal/' + deal.id + '">Details</a>' +
+      '<button class="btn btn-save' + (isSaved(deal.id) ? " saved" : "") + '" data-save="' + deal.id + '">' + (isSaved(deal.id) ? "✓ Saved" : "＋ Save") + "</button>" +
     "</div>" +
   "</article>";
 }
@@ -143,6 +193,11 @@ function filteredDeals() {
     if (sort === "saving") return savingOf(b) - savingOf(a);
     if (sort === "price-asc") return a.sale - b.sale;
     if (sort === "price-desc") return b.sale - a.sale;
+    if (sort === "ending") {
+      const ea = Date.parse(a.ends || "30 Nov 2026");
+      const eb = Date.parse(b.ends || "30 Nov 2026");
+      return ea - eb || discountOf(b) - discountOf(a);
+    }
     return discountOf(b) - discountOf(a);
   });
   return list;
@@ -185,13 +240,14 @@ function renderDetail(id) {
       "<dt>Discount</dt><dd>" + d + "% off (save " + money(savingOf(deal)) + ")</dd>" +
       "<dt>Store</dt><dd>" + escapeHtml(deal.store) + "</dd>" +
       (endsOf(deal) ? "<dt>Deal ends</dt><dd>" + escapeHtml(endsOf(deal)) + "</dd>" : "") +
-      "<dt>Price checked</dt><dd>" + escapeHtml(CHECKED_AT) + "</dd>" +
+      "<dt>Price checked</dt><dd>" + escapeHtml(checkedOf(deal)) + "</dd>" +
       "<dt>How it was checked</dt><dd>Verified against the " + escapeHtml(checkMethodOf(deal).label) + "</dd>" +
       "<dt>Price source</dt><dd>" + escapeHtml(deal.source) + "</dd>" +
     "</dl>" +
     compareForDetail(deal) +
     '<p class="verdict-note"><strong>Why this verdict:</strong> ' + escapeHtml(deal.note) + "</p>" +
-    '<p><a class="btn btn-store" href="' + escapeHtml(deal.url) + '" target="_blank" rel="noopener">View at ' + escapeHtml(deal.store) + " &nearr;</a></p>";
+    '<p class="detail-actions"><button class="btn btn-save' + (isSaved(deal.id) ? " saved" : "") + '" data-save="' + deal.id + '">' + (isSaved(deal.id) ? "✓ Saved to your list" : "＋ Save to your list") + '</button> ' +
+    '<a class="btn btn-store" href="' + escapeHtml(deal.url) + '" target="_blank" rel="noopener">View at ' + escapeHtml(deal.store) + " &nearr;</a></p>";
   detail.hidden = false;
   document.getElementById("back-btn").addEventListener("click", function () {
     location.hash = "#/";
@@ -287,12 +343,64 @@ function renderStats() {
   if (!banner) return;
   const lows = DEALS.filter(isNewLow).length;
   const hot = DEALS.filter(function (d) { return discountOf(d) >= 40; }).length;
+  const endingToday = DEALS.filter(function (d) { return d.ends === "28 Nov 2026"; }).length;
   banner.innerHTML =
     '<div class="stat"><span class="stat-num">' + DEALS.length + '</span><span class="stat-label">verified deals</span></div>' +
     '<div class="stat"><span class="stat-num">' + STORES.length + '</span><span class="stat-label">stores</span></div>' +
     '<div class="stat"><span class="stat-num">' + money(totalSavings()) + '</span><span class="stat-label">total savings if you bought them all</span></div>' +
     '<div class="stat"><span class="stat-num">' + lows + '</span><span class="stat-label">new lows</span></div>' +
-    '<div class="stat"><span class="stat-num">' + hot + '</span><span class="stat-label">hot deals (40%+ off)</span></div>';
+    '<div class="stat"><span class="stat-num">' + hot + '</span><span class="stat-label">hot deals (40%+ off)</span></div>' +
+    '<div class="stat"><span class="stat-num">' + endingToday + '</span><span class="stat-label">deals end today (28 Nov)</span></div>';
+}
+
+/* Your deal list: the saved deals, what they cost together, and
+   what they save together — with a shareable link to the list. */
+function renderMyList() {
+  const box = document.getElementById("my-list");
+  if (!box) return;
+  const list = savedIds.map(function (id) {
+    return DEALS.find(function (d) { return d.id === id; });
+  }).filter(Boolean);
+  if (!list.length) {
+    box.innerHTML = "<h2>Your deal list — plan your savings</h2>" +
+      '<p class="section-intro">Tap <strong>＋ Save</strong> on any deal card to add it here. Your list shows what you would pay in total, what it would cost at usual prices, and how much you save — and you can copy a link to share the list.</p>' +
+      '<p class="my-list-empty">No deals saved yet.</p>';
+    return;
+  }
+  const pay = list.reduce(function (s, d) { return s + d.sale; }, 0);
+  const usual = list.reduce(function (s, d) { return s + d.usual; }, 0);
+  const saved = usual - pay;
+  const pct = Math.round((1 - pay / usual) * 100);
+  box.innerHTML = "<h2>Your deal list — plan your savings</h2>" +
+    '<p class="section-intro">Your saved deals, with the total at sale prices and at usual prices.</p>' +
+    '<ul class="my-list-items">' + list.map(function (deal) {
+      return '<li><a href="#/deal/' + deal.id + '">' + escapeHtml(deal.name) + "</a>" +
+        '<span class="my-list-store">' + escapeHtml(deal.store) + "</span>" +
+        '<span class="my-list-price">' + money(deal.sale) + ' <s>' + money(deal.usual) + "</s></span>" +
+        '<span class="my-list-save">Save ' + money(savingOf(deal)) + "</span>" +
+        '<button class="my-list-remove" data-save="' + deal.id + '" aria-label="Remove ' + escapeHtml(deal.name) + ' from your list">✕</button></li>';
+    }).join("") + "</ul>" +
+    '<div class="my-list-totals">' +
+      "<span><strong>" + list.length + (list.length === 1 ? " deal" : " deals") + "</strong></span>" +
+      "<span>You pay <strong>" + money(pay) + "</strong></span>" +
+      "<span>Usual price <strong>" + money(usual) + "</strong></span>" +
+      '<span class="my-list-total-save">You save <strong>' + money(saved) + " (" + pct + "%)</strong></span>" +
+    "</div>" +
+    '<div class="my-list-actions"><button class="btn btn-details" id="copy-list">Copy link to this list</button> ' +
+    '<button class="btn btn-details" id="clear-list">Clear list</button> ' +
+    '<span class="copy-note" id="copy-note" aria-live="polite"></span></div>';
+}
+
+function copyListLink() {
+  const base = location.href.split("#")[0].split("?")[0];
+  const url = base + "?list=" + savedIds.join(",");
+  const note = document.getElementById("copy-note");
+  function done(ok) {
+    if (note) note.textContent = ok ? "Link copied ✓" : "Copy didn't work — the link is: " + url;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
+  } else { done(false); }
 }
 
 /* Top 5 deals by deal score — the strongest cuts on the page. */
@@ -360,6 +468,20 @@ discountFilter.addEventListener("change", renderGrid);
 sortSelect.addEventListener("change", renderGrid);
 window.addEventListener("hashchange", route);
 
+/* Save / remove / clear / copy for the deal list (event delegation,
+   since the grid and the detail view re-render on every change). */
+document.addEventListener("click", function (ev) {
+  const btn = ev.target && ev.target.closest ? ev.target.closest("[data-save]") : null;
+  if (btn) { toggleSaved(btn.getAttribute("data-save")); return; }
+  if (ev.target && ev.target.id === "clear-list") {
+    savedIds = [];
+    storeSavedList();
+    renderMyList();
+    renderGrid();
+  }
+  if (ev.target && ev.target.id === "copy-list") { copyListLink(); }
+});
+
 const newLowToggle = document.getElementById("newlow-toggle");
 if (newLowToggle) {
   newLowToggle.addEventListener("click", function () {
@@ -384,6 +506,7 @@ buildChips();
 buildStoreOptions();
 renderTopPicks();
 renderStoreStrip();
+renderMyList();
 renderCompare();
 renderStats();
 renderLegend();

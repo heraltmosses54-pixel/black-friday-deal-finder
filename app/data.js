@@ -1,8 +1,10 @@
 /* DealHound deal data.
    Every price below was checked by hand on Black Friday, 27 Nov 2026
    (v1 around 14:05 WIB; v2 new deals re-checked around 17:20 WIB;
-   v3 new deals checked around 21:30 WIB), against the store's own
-   Black Friday release or a deals roundup that names the store.
+   v3 new deals checked around 21:30 WIB) and on 28 Nov 2026
+   (v4 new deals checked around 09:45 WIB, each carrying its own
+   `checked` field), against the store's own Black Friday release or
+   a deals roundup that names the store.
    Each deal names its source. Discounts are computed from sale vs
    usual price; the verdict follows the rule on the site.
    Verification method: deals whose source is the store's own release
@@ -635,6 +637,138 @@ const DEALS = [
     source: "Benzinga Black Friday tech deals, 27 Nov 2026",
     ends: "29 Nov 2026",
     note: "Same $129.99 as Amazon — a tie at Target."
+  },
+  {
+    id: "samsung-odyssey-49",
+    name: "Samsung 49-inch Odyssey Gaming Monitor",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 854.98, usual: 1268.29,
+    url: "https://www.amazon.com/s?k=samsung+49+inch+odyssey+gaming+monitor",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "33% off the 49-inch Odyssey monitor: $413 off."
+  },
+  {
+    id: "hisense-u6-pro-85",
+    name: "Hisense 85-inch U6 Pro Series 4K TV",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 947.99, usual: 1999.99,
+    url: "https://www.amazon.com/s?k=hisense+85+inch+u6+pro+4k+tv",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "53% off the 85-inch U6 Pro: $1,052 off — the biggest TV saving on the page by dollars."
+  },
+  {
+    id: "sony-bravia-6-77",
+    name: "Sony 77-inch BRAVIA 6 OLED 4K TV",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 1798, usual: 2999.99,
+    url: "https://www.amazon.com/s?k=sony+77+bravia+6+oled+4k+tv",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "40% off the 77-inch BRAVIA 6 OLED: $1,202 off."
+  },
+  {
+    id: "lg-c6-oled-77",
+    name: "LG 77-inch C6 OLED evo 4K TV",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 1899.99, usual: 2499.99,
+    url: "https://www.amazon.com/s?k=lg+77+c6+oled+4k+tv",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$600 off the 77-inch C6 OLED evo with 165Hz VRR for PC gaming."
+  },
+  {
+    id: "samsung-galaxy-s26-ultra",
+    name: "Samsung Galaxy S26 Ultra (256GB)",
+    store: "Amazon",
+    category: "Electronics",
+    sale: 949.99, usual: 1399.99,
+    url: "https://www.amazon.com/s?k=samsung+galaxy+s26+ultra+256gb",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$450 off the Galaxy S26 Ultra with 256GB."
+  },
+  {
+    id: "hp-omen-16-oled",
+    name: "HP HyperX OMEN 16 OLED Gaming Laptop",
+    store: "Amazon",
+    category: "Computing",
+    sale: 2399, usual: 3199,
+    url: "https://www.amazon.com/s?k=hp+omen+16+oled+gaming+laptop",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$800 off the OMEN 16 OLED gaming laptop."
+  },
+  {
+    id: "msi-prestige-16-flip",
+    name: "MSI Prestige 16 Flip Laptop",
+    store: "Amazon",
+    category: "Computing",
+    sale: 1789, usual: 2149,
+    url: "https://www.amazon.com/s?k=msi+prestige+16+flip+laptop",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "Only 17% off — a modest cut, but $360 off a premium 16-inch laptop."
+  },
+  {
+    id: "lexar-nm1090-pro-4tb",
+    name: "Lexar NM1090 PRO 4TB PCIe 5.0 NVMe SSD",
+    store: "Amazon",
+    category: "Computing",
+    sale: 719.99, usual: 999.99,
+    url: "https://www.amazon.com/s?k=lexar+nm1090+pro+4tb+ssd",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$280 off the 4TB PCIe 5.0 SSD with reads up to 14,000MB/s."
+  },
+  {
+    id: "acer-predator-x32",
+    name: "Acer Predator X32 X 4K QD-OLED Gaming Monitor (240Hz)",
+    store: "Amazon",
+    category: "Gaming",
+    sale: 649.99, usual: 999.99,
+    url: "https://www.amazon.com/s?k=acer+predator+x32+4k+qd-oled+monitor",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "35% off the 32-inch 4K QD-OLED 240Hz monitor: $350 off."
+  },
+  {
+    id: "aoc-agon-pro-27",
+    name: "AOC AGON Pro 27-inch QD-OLED Gaming Monitor (240Hz)",
+    store: "Amazon",
+    category: "Gaming",
+    sale: 297.49, usual: 499.99,
+    url: "https://www.amazon.com/s?k=aoc+agon+pro+27+qd-oled+monitor",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$202.50 off the 27-inch QD-OLED 240Hz monitor."
+  },
+  {
+    id: "logitech-g502-x",
+    name: "Logitech G502 X Gaming Mouse",
+    store: "Amazon",
+    category: "Gaming",
+    sale: 39.99, usual: 99.99,
+    url: "https://www.amazon.com/s?k=logitech+g502+x+gaming+mouse",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "60% off the G502 X gaming mouse."
+  },
+  {
+    id: "cyberpowerpc-rtx-5060ti",
+    name: "CyberPowerPC RTX 5060 Ti Gaming PC",
+    store: "Amazon",
+    category: "Gaming",
+    sale: 1299.99, usual: 1629.99,
+    url: "https://www.amazon.com/s?k=cyberpowerpc+rtx+5060+ti+gaming+pc",
+    source: "PC Guide Black Friday live deals, 27 Nov 2026",
+    checked: "28 Nov 2026, 09:45 WIB",
+    note: "$330 off the RTX 5060 Ti gaming PC."
   }
 ];
 
@@ -702,6 +836,20 @@ const COMPARE = [
     b: { store: "Target", price: 129.99 },
     note: "A tie — the same $129.99 at both stores.",
     source: "ComicBook Amazon Black Friday roundup, 19 Nov 2026; Benzinga Black Friday tech deals, 27 Nov 2026"
+  },
+  {
+    name: "Nintendo Switch 2 + Mario Kart World Bundle",
+    a: { store: "Amazon", price: 499 },
+    b: { store: "Target", price: 499.99 },
+    note: "Amazon wins by 99¢ — effectively a tie.",
+    source: "Gizmodo Black Friday picks, 26 Nov 2026; Benzinga Black Friday tech deals, 27 Nov 2026"
+  },
+  {
+    name: "Bose QuietComfort Headphones",
+    a: { store: "Amazon", price: 169 },
+    b: { store: "Target", price: 169.99 },
+    note: "Amazon wins by 99¢ — effectively a tie.",
+    source: "Yahoo Black Friday roundup, 22 Nov 2026; Benzinga Black Friday tech deals, 27 Nov 2026"
   }
 ];
 

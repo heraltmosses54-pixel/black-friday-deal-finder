@@ -292,6 +292,44 @@ body {
 .btn-store:hover { background: #ffc53d; }
 .btn-details { background: #fff; color: var(--navy); }
 .btn-details:hover { background: #eef2f7; }
+.btn-save { background: #fff; color: var(--navy); flex: 0 0 auto; }
+.btn-save:hover { background: #fdf6e3; border-color: var(--amber-dark); }
+.btn-save.saved { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* Your deal list */
+
+.my-list { padding: 4px 0 8px; }
+.my-list h2 { font-size: 22px; color: var(--navy); margin: 18px 0 6px; }
+.my-list-empty { color: var(--muted); font-size: 14.5px; background: #fff; border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 0; }
+.my-list-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.my-list-items li {
+  display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center;
+  background: #fff; border: 1px solid var(--line);
+  border-left: 5px solid var(--green);
+  border-radius: 10px; padding: 10px 14px;
+}
+.my-list-items a { font-weight: 700; color: var(--ink); text-decoration: none; flex: 1 1 260px; }
+.my-list-items a:hover { color: var(--amber-dark); text-decoration: underline; }
+.my-list-store { font-size: 13px; color: var(--muted); }
+.my-list-price { font-size: 15px; font-weight: 800; color: var(--navy); }
+.my-list-price s { font-weight: 400; color: var(--muted); font-size: 13px; }
+.my-list-save { font-size: 14px; font-weight: 700; color: var(--green); }
+.my-list-remove {
+  border: 1.5px solid var(--red); color: var(--red); background: #fff;
+  border-radius: 50%; width: 26px; height: 26px; cursor: pointer;
+  font-size: 12px; line-height: 1; flex: 0 0 auto;
+}
+.my-list-remove:hover { background: #fbe3e1; }
+.my-list-totals {
+  display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center;
+  background: var(--navy); color: #f7f2e7; border-radius: var(--radius);
+  padding: 14px 18px; margin-top: 10px; font-size: 15px;
+}
+.my-list-totals strong { color: #fff; }
+.my-list-total-save strong { color: var(--amber); }
+.my-list-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+.copy-note { font-size: 13.5px; color: var(--muted); }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
 /* Detail view */
 
@@ -338,4 +376,6 @@ body {
   .store-card { flex: 1 1 44%; }
   .top-list li { gap: 4px 8px; }
   .top-name { flex-basis: 100%; }
+  .my-list-items a { flex-basis: 100%; }
+  .my-list-totals { gap: 6px 16px; font-size: 14px; }
 }
